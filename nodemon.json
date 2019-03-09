@@ -1,6 +1,7 @@
 {
     "env": {
         "MONGO_ATLAS_USERNAME": "bobz",
-        "MONGO_ATLAS_PASSWORD": "87-pr-12"
+        "MONGO_ATLAS_PASSWORD": "87-pr-12",
+        "DEFAULT_SERVICE_DOMAIN": "http://localhost:3000"
     }
 }

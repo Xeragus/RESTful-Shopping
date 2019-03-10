@@ -52,7 +52,7 @@ router.get('/:id', (request, response, next) => {
                 message: "Get product by id",
                 product: ProductNormalizer.normalize(product)
             }) : response.status(404).json({
-                message: 'No product id matches the provided id'
+                message: 'Product not found'
             })
         })
         .catch(error => {
@@ -75,7 +75,8 @@ router.patch('/:id', (request, response, next) => {
                 product_id: request.params.id,
                 request: {
                     type: "GET",
-                    url: process.env.DEFAULT_SERVICE_DOMAIN + "/products/" + request.params.id
+                    url: process.env.DEFAULT_SERVICE_DOMAIN + 
+                    "/products/" + request.params.id
                 }
             })
         })

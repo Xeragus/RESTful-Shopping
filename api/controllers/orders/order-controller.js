@@ -5,24 +5,16 @@ const OrderNormalizer = require('../../normalizers/orders/order-normalizer')
 
 module.exports.all = function(req, res) {
     Order.find()
-    .select('product quantity _id')
-    .populate('product')
+    .select('quantity _id')
+    .populate('product', '_id name')
     .exec()
     .then(orders => {
         res.status(200).json({
             message: "List of all orders",
             total: orders.length,
             orders: orders.map(order => {
-                // return OrderNormalizer.normalize(order)
-                return {
-                    product: order.product,
-                    quantity: order.quantity,
-                    request: {
-                        type: "GET",
-                        url: process.env.DEFAULT_SERVICE_DOMAIN + 
-                        "/orders/" + order._id
-                    }
-                }
+                console.log(order.product)
+                return OrderNormalizer.normalize(order)
             })
         })
     })
@@ -36,13 +28,13 @@ module.exports.all = function(req, res) {
 module.exports.get = function(req, res) {
     Order.findById(req.params.id)
         .select('product quantity _id')
+        .populate('product')
         .exec()
         .then(order => {
             order ? res.status(200).json({
                 message: "Get order by id",
                 order: {
-                    product: order.product,
-                    quantity: order.quantity,
+                    order: order,
                     request: {
                         type: "GET",
                         url: process.env.DEFAULT_SERVICE_DOMAIN + 
@@ -80,16 +72,7 @@ module.exports.create = function(req, res) {
         .then(order => {
             res.status(201).json({
                 message: "Order created successfully",
-                // order: OrderNormalizer.normalize(order)
-                order: {
-                    product_id: order.product,
-                    quantity: order.quantity,
-                    request: {
-                        type: "GET",
-                        url: process.env.DEFAULT_SERVICE_DOMAIN + 
-                            "/orders/" + order._id
-                    }
-                }
+                order: OrderNormalizer.normalize(order)
             })
         })
         .catch(error => {

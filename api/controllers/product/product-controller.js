@@ -3,9 +3,9 @@ const Product = require('../../models/product')
 const ProductNormalizer = require('../../normalizers/products/product-normalizer');
 
 module.exports.all = function(req, res) {
-    console.log("all")
     Product.find()
         .select('name price _id')
+        .populate('company', '_id name')
         .exec()
         .then(products => {
             res.status(200).json({
@@ -27,11 +27,13 @@ module.exports.get = function(req, res) {
     console.log('get')
     Product.findById(req.params.id)
         .select('name price _id')
+        .populate('company')
         .exec()
         .then(product => {
             product ? res.status(201).json({
-                message: "Get product by id",
-                product: ProductNormalizer.normalize(product)
+                message: "Get product by id s",
+                product: ProductNormalizer.normalize(product),
+                company: product.company
             }) : res.status(404).json({
                 message: 'Product not found'
             })
@@ -42,18 +44,18 @@ module.exports.get = function(req, res) {
 }
 
 module.exports.create = function(req, res) {
-    console.log('create')
     const product = new Product({
         _id: new mongoose.Types.ObjectId,
         name: req.body.name,
-        price: req.body.price
+        price: req.body.price,
+        company: req.body.company_id
     })
 
     product.save()
         .then(() => {
             res.status(201).json({
                 message: 'Product created successfully',
-                product: ProductNormalizer.normalize(product)
+                product: ProductNormalizer.normalize(product),
             })
         })
         .catch(error => {
@@ -62,7 +64,6 @@ module.exports.create = function(req, res) {
 }
 
 module.exports.patch = function(req, res) {
-    console.log('patch')
     const updateOps = {};
     
     for(const ops of req.body) {

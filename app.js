@@ -1,10 +1,11 @@
 const express = require('express')
 const app = express()
-const productRoutes = require('./api/routes/products')
-const ordersRoutes = require('./api/routes/orders')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const productRoutes = require('./api/routes/products')
+const ordersRoutes = require('./api/routes/orders')
+const companiesRoutes = require('./api/routes/companies')
 
 // DB connection
 mongoose.connect(
@@ -39,6 +40,7 @@ app.use((request, response, next) => {
 
 app.use('/products', productRoutes)
 app.use('/orders', ordersRoutes)
+app.use('/companies', companiesRoutes)
 
 // error handling
 app.use((request, response, next) => {
